@@ -1,5 +1,5 @@
 import './styles/Landing.css';
-import Player from './Player.js';
+import Player from './Player';
 
 function Landing(props) {
     const players = props.players.sort((a,b)=> a.id > b.id) // Sort by ID in the lobby

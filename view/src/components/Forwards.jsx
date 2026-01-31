@@ -1,5 +1,5 @@
 import './styles/Forwards.css';
-import Hazards from './Hazards.js';
+import Hazards from './Hazards';
 
 function Forwards(props) {
   const historyList = props.history.map((turn)=>
