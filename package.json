@@ -1,5 +1,5 @@
 {
-  "name": "drinkingold",
+  "name": "gold",
   "version": "1.0.0",
   "description": "",
   "main": "controller/server.js",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mcteamster/drinkingold.git"
+    "url": "git+https://github.com/mcteamster/gold.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/mcteamster/drinkingold/issues"
+    "url": "https://github.com/mcteamster/gold/issues"
   },
-  "homepage": "https://github.com/mcteamster/drinkingold#readme",
+  "homepage": "https://github.com/mcteamster/gold#readme",
   "dependencies": {
     "express": "^4.17.1",
     "ws": "^8.18.1"
