@@ -1,5 +1,5 @@
 import './styles/Backwards.css';
-import Player from './Player.js';
+import Player from './Player';
 
 function Backwards(props) {
   const players = props.players.sort((a,b)=> a.name > b.name).sort((a,b)=> {
