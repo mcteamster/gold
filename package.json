@@ -2,10 +2,16 @@
   "name": "gold",
   "version": "1.0.0",
   "description": "",
-  "main": "controller/server.js",
+  "private": true,
+  "workspaces": [
+    "controller",
+    "view"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./controller/server.js"
+    "start": "npm run start -w controller",
+    "dev": "npm run dev -w view",
+    "build": "npm run build -w view"
   },
   "repository": {
     "type": "git",
@@ -16,9 +22,5 @@
   "bugs": {
     "url": "https://github.com/mcteamster/gold/issues"
   },
-  "homepage": "https://github.com/mcteamster/gold#readme",
-  "dependencies": {
-    "express": "^4.17.1",
-    "ws": "^8.18.1"
-  }
+  "homepage": "https://github.com/mcteamster/gold#readme"
 }
