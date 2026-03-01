@@ -9,7 +9,7 @@ server.on('upgrade', (request, socket, head) => {
         ws.emit('connection', socket, request);
     });
 });
-app.use(express.static("./view/build"));
+app.use(express.static("../view/build"));
 
 // Model
 const Lobby = require("../model/lobby.js");
