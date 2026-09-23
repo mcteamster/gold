@@ -188,8 +188,10 @@ export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
             await putGameState(roomStr, { ...currentStored, gameState: currentGs });
 
             if (allVoted) {
-              // Cancel schedule and invoke nextTurn inline
-              const sched = turnScheduleName(roomStr, currentGs.meta.turn - 1);
+              // Cancel the schedule that was created for this turn.
+              // The schedule name uses the CURRENT turn number (meta.turn is not
+              // incremented by setIntent — only updateGameState increments it).
+              const sched = turnScheduleName(roomStr, currentGs.meta.turn);
               await deleteTurnSchedule(sched);
               // Invoke nextTurn inline by re-using nextTurn logic (avoid circular dep)
               const { advanceTurn } = await import('./nextTurn');

@@ -187,13 +187,14 @@ export class GoldStack extends cdk.Stack {
       resources: [nextTurnFn.functionArn],
     }));
 
-    // Pass nextTurn ARN and scheduler role ARN to message handler
-    // (nextTurnFn gets its own ARN via process.env.AWS_LAMBDA_FUNCTION_NAME at runtime)
+    // Pass nextTurn ARN and scheduler role ARN to both message and nextTurn handlers.
+    // nextTurnFn needs its own ARN to re-schedule itself for subsequent turns;
+    // AWS_ACCOUNT_ID is NOT a standard Lambda runtime env var, so we must inject it explicitly
+    // rather than relying on the fallback ARN construction in scheduler.ts.
     messageFn.addEnvironment('NEXT_TURN_FUNCTION_ARN', nextTurnFn.functionArn);
     messageFn.addEnvironment('SCHEDULER_ROLE_ARN', schedulerRole.roleArn);
-    // nextTurn needs its own ARN for re-scheduling; use a lazy token to avoid circular dep
+    nextTurnFn.addEnvironment('NEXT_TURN_FUNCTION_ARN', nextTurnFn.functionArn);
     nextTurnFn.addEnvironment('SCHEDULER_ROLE_ARN', schedulerRole.roleArn);
-    // nextTurn ARN is available as process.env.AWS_LAMBDA_FUNCTION_NAME + resolving at runtime
 
     // ──────────────────────────────────────────────
     // WebSocket Routes (Task 4.6)
