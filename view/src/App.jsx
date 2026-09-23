@@ -91,8 +91,9 @@ class App extends React.Component {
 
   componentDidMount() {
     // Websocket Connection
-    this.ws = new WebSocket('wss://gold.mcteamster.com'); // Prod
-    //this.ws = new WebSocket('ws://localhost:8888'); // Dev
+    // TODO: Update WSS_ENDPOINT with output from `cdk deploy` (GoldStack WebSocketEndpoint output)
+    const WSS_ENDPOINT = process.env.REACT_APP_WSS_ENDPOINT || 'wss://gold.mcteamster.com';
+    this.ws = new WebSocket(WSS_ENDPOINT); // Serverless backend (CDK / API Gateway)
 
     // Bind Listeners to Buttons
     this.ws.onopen = () => {

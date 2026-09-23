@@ -4,8 +4,8 @@
   "description": "",
   "private": true,
   "workspaces": [
-    "controller",
-    "view"
+    "view",
+    "service"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
