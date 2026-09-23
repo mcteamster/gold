@@ -1,5 +1,5 @@
 import React from 'react';
-import { Trophy } from 'lucide-react';
+import { Trophy, Medal, Beer } from 'lucide-react';
 
 /**
  * EndgameScreen — shown during meta.phase === "endgame"
@@ -14,7 +14,8 @@ function EndgameScreen({ state }) {
       return a.name > b.name ? 1 : -1;
     });
 
-  const medals = ['🥇', '🥈', '🥉'];
+  // Medal colours for the top three ranks; lower ranks show a plain number.
+  const medalColour = ['text-yellow-500', 'text-gray-400', 'text-amber-700'];
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-amber-50 p-6">
@@ -34,7 +35,13 @@ function EndgameScreen({ state }) {
               }`}
             >
               <div className="flex items-center gap-3">
-                <span className="text-xl w-8 text-center">{medals[index] ?? `${index + 1}.`}</span>
+                <span className="w-8 flex items-center justify-center">
+                  {index < 3 ? (
+                    <Medal className={`w-6 h-6 ${medalColour[index]}`} />
+                  ) : (
+                    <span className="text-xl text-center">{index + 1}.</span>
+                  )}
+                </span>
                 <span
                   className="w-3 h-3 rounded-full flex-shrink-0"
                   style={{ backgroundColor: player.colour }}
@@ -47,8 +54,9 @@ function EndgameScreen({ state }) {
         })}
       </ul>
 
-      <p className="mt-10 text-amber-500 text-sm text-center">
-        Thanks for playing Drinkin&apos; Gold! 🍻
+      <p className="mt-10 text-amber-500 text-sm text-center flex items-center justify-center gap-1">
+        Thanks for playing Drinkin&apos; Gold!
+        <Beer className="w-4 h-4" />
       </p>
     </div>
   );

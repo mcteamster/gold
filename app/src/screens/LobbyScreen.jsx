@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { KeyRound, UserPlus, PlayCircle } from 'lucide-react';
+import { KeyRound, UserPlus, PlayCircle, ArrowRight, ArrowLeft, AlertTriangle } from 'lucide-react';
 import Player from '../components/Player';
 
 /**
@@ -61,10 +61,19 @@ function LobbyScreen({ state, sendMsg, wsRef }) {
 
       {/* Instructions */}
       {!isJoined && (
-        <div className="bg-amber-100 border border-amber-300 rounded-xl p-4 mb-6 max-w-sm w-full text-sm text-amber-800 space-y-1">
-          <p>👉 Tap right / press→ to kick on and drink more</p>
-          <p>👈 Tap left / press← to bail and grab a bite</p>
-          <p>⚠️ Two of the same hazard ends your night</p>
+        <div className="bg-amber-100 border border-amber-300 rounded-xl p-4 mb-6 max-w-sm w-full text-sm text-amber-800 space-y-2">
+          <p className="flex items-center gap-2">
+            <ArrowRight className="w-4 h-4 flex-shrink-0" />
+            Tap right / press → to kick on and drink more
+          </p>
+          <p className="flex items-center gap-2">
+            <ArrowLeft className="w-4 h-4 flex-shrink-0" />
+            Tap left / press ← to bail and grab a bite
+          </p>
+          <p className="flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+            Two of the same hazard ends your night
+          </p>
         </div>
       )}
 

@@ -68,6 +68,11 @@ function gameReducer(state, action) {
 function App() {
   const [state, dispatch] = useReducer(gameReducer, initialState);
   const wsRef = useRef(null);
+  // Mirror the latest state into a ref so sendMsg (captured by the keydown
+  // listener registered once in a []-deps effect) reads live values instead
+  // of the initial-render closure.
+  const stateRef = useRef(state);
+  stateRef.current = state;
 
   // ─── sendMsg ─────────────────────────────────────────────────────────────────
   const sendMsg = (type, extraData = {}) => {
@@ -79,16 +84,17 @@ function App() {
     };
 
     if (type === 'yeah' || type === 'nah') {
+      const liveState = stateRef.current;
       const playerID = parseInt(sessionStorage.getItem('playerID'));
-      const p = state.players.find((x) => x.id === playerID);
-      const hazardEnd = state.hazards.filter((h) => h.active >= 2).length;
+      const p = liveState.players.find((x) => x.id === playerID);
+      const hazardEnd = liveState.hazards.filter((h) => h.active >= 2).length;
       if (!p || hazardEnd > 0) return;
-      if (p.active !== true && p.active !== state.meta.turn) return;
+      if (p.active !== true && p.active !== liveState.meta.turn) return;
 
       msg.data = type === 'yeah';
       dispatch({
         type: 'OPTIMISTIC_INTENT',
-        payload: { playerID, intent: type, turn: state.meta.turn },
+        payload: { playerID, intent: type, turn: liveState.meta.turn },
       });
     } else if (type === 'enter') {
       const { roomID, name } = extraData;
