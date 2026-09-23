@@ -5,13 +5,14 @@
   "private": true,
   "workspaces": [
     "app",
-    "controller"
+    "service"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npm run start -w controller",
     "dev": "npm run dev -w app",
-    "build": "npm run build -w app"
+    "build": "npm run build -w app",
+    "deploy": "npm run deploy -w service",
+    "synth": "npm run synth -w service"
   },
   "repository": {
     "type": "git",

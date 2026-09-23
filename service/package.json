@@ -1,0 +1,27 @@
+{
+  "name": "@mcteamster/gold-service",
+  "version": "1.0.0",
+  "description": "Serverless backend for Drinkin' Gold",
+  "private": true,
+  "scripts": {
+    "deploy": "cdk deploy",
+    "synth": "cdk synth",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.145",
+    "@types/node": "^20.17.10",
+    "aws-cdk": "^2.173.4",
+    "aws-cdk-lib": "^2.173.4",
+    "constructs": "^10.4.2",
+    "esbuild": "^0.21.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "@aws-sdk/client-apigatewaymanagementapi": "^3.726.1",
+    "@aws-sdk/client-dynamodb": "^3.726.1",
+    "@aws-sdk/client-scheduler": "^3.726.1",
+    "@aws-sdk/lib-dynamodb": "^3.726.1"
+  }
+}

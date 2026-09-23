@@ -25,3 +25,6 @@ yarn-error.log*
 
 # view
 /view/.*
+
+# service CDK build output
+service/cdk.out/
