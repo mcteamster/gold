@@ -123,9 +123,12 @@ function App() {
           dispatch({ type: 'SET_READY_STATUS', payload: msg.meta.data });
           break;
         case 'secret':
+          // Only persist identity — do NOT dispatch SET_STATE with the lobby
+          // player shape because it would overwrite state.meta (losing phase,
+          // round, turn, etc.) until the next broadcastToRoom arrives.
+          // The full gameState broadcast immediately follows on the server side.
           sessionStorage.setItem('playerID', msg.id);
           sessionStorage.setItem('clientSecret', msg.secret);
-          dispatch({ type: 'SET_STATE', payload: msg });
           break;
         case 'rejoin':
           // Server re-sends identity — nothing to update in state

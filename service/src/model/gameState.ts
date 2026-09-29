@@ -206,6 +206,9 @@ export function updateGameState(gs: GameState): GameState {
         }
         break;
       }
+      case 'start':
+        // Pre-game card — no scoring effect, just move it through history.
+        break;
       default:
         console.error(new Date(), 'Card type mismatch:', newCard?.type);
     }

@@ -26,6 +26,7 @@ import {
   createGameState,
   setIntent,
   getActive,
+  updateGameState,
 } from '../model/gameState';
 import { addPlayer, authPlayer, checkPlayer, COLOURS, LobbyPlayer } from '../model/lobby';
 import { createTurnSchedule, deleteTurnSchedule, turnScheduleName } from '../lib/scheduler';
@@ -137,12 +138,21 @@ export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
           // ── 7.5: Start game ──────────────────────────────────────────────
           gs.meta.phase = 'play';
           gs.meta.turntime = TURN_DURATION_MS;
-          gs.version++;
 
+          // Advance past the initial start card (card 0) so players see a real
+          // game card immediately.  updateGameState moves card 0 into history,
+          // draws the first real card from the deck, and increments meta.turn.
+          updateGameState(gs);
+
+          // Override turntime back to full duration — updateGameState applies
+          // its 2 % decay, but turn 1 should run for the full TURN_DURATION_MS.
+          gs.meta.turntime = TURN_DURATION_MS;
+
+          // version was already incremented by updateGameState; no extra bump.
           await putGameState(roomStr, { gameState: gs, lobbyPlayers, colours });
           await broadcastToRoom(roomStr, gs);
 
-          // Create first turn schedule
+          // Create first turn schedule (for the turn that was just drawn)
           await createTurnSchedule(roomStr, gs.meta.turn, TURN_DURATION_MS, {
             roomID: roomStr,
             scheduleName: turnScheduleName(roomStr, gs.meta.turn),

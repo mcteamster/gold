@@ -106,7 +106,7 @@ function GameScreen({ state, sendMsg }) {
 
       {/* ── Action buttons ────────────────────────────────────────── */}
       <Buttons
-        canAct={playerActive && !hazardTriggered && meta.card !== 0}
+        canAct={playerActive && !hazardTriggered}
         onStay={() => sendMsg('yeah')}
         onBail={() => sendMsg('nah')}
       />
