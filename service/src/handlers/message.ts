@@ -27,7 +27,7 @@ import {
   setIntent,
   getActive,
 } from '../model/gameState';
-import { addPlayer, authPlayer, checkPlayer, COLOURS } from '../model/lobby';
+import { addPlayer, authPlayer, checkPlayer, COLOURS, LobbyPlayer } from '../model/lobby';
 import { createTurnSchedule, deleteTurnSchedule, turnScheduleName } from '../lib/scheduler';
 import { ConditionalCheckFailedException } from '@aws-sdk/client-dynamodb';
 
@@ -86,14 +86,27 @@ export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
       const gs = createGameState(newRoomID);
       gs.version = 0; // first write — putGameState uses attribute_not_exists condition when version is 0
 
+      const lobbyPlayers: LobbyPlayer[] = [];
+      const colours = [...COLOURS];
+
+      // Add the creator as player 1
+      const creatorName = String(msg.data ?? 'Host');
+      const creatorResult = addPlayer(lobbyPlayers, colours, gs, creatorName);
+
       const stored: StoredGameState = {
         gameState: gs,
-        lobbyPlayers: [],
-        colours: [...COLOURS],
+        lobbyPlayers,
+        colours,
       };
 
       await putGameState(newRoomID, stored);
       await updateConnectionRoom(connectionId, newRoomID);
+
+      // Send secret to the creator so they get playerID=1 (isHost)
+      if (typeof creatorResult !== 'string') {
+        await postToConnection(connectionId, creatorResult);
+      }
+
       await broadcastToRoom(newRoomID, gs);
 
       return { statusCode: 200, body: 'OK' };
