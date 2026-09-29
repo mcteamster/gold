@@ -188,12 +188,16 @@ export class GoldStack extends cdk.Stack {
     }));
 
     // Pass nextTurn ARN and scheduler role ARN to both message and nextTurn handlers.
-    // nextTurnFn needs its own ARN to re-schedule itself for subsequent turns;
-    // AWS_ACCOUNT_ID is NOT a standard Lambda runtime env var, so we must inject it explicitly
-    // rather than relying on the fallback ARN construction in scheduler.ts.
-    messageFn.addEnvironment('NEXT_TURN_FUNCTION_ARN', nextTurnFn.functionArn);
+    // Construct the nextTurn ARN from known parts to avoid a CloudFormation circular
+    // dependency (nextTurnFn.functionArn would create a self-reference).
+    const nextTurnFunctionArn = cdk.Arn.format({
+      service: 'lambda',
+      resource: 'function',
+      resourceName: 'gold-next-turn',
+    }, this);
+    messageFn.addEnvironment('NEXT_TURN_FUNCTION_ARN', nextTurnFunctionArn);
     messageFn.addEnvironment('SCHEDULER_ROLE_ARN', schedulerRole.roleArn);
-    nextTurnFn.addEnvironment('NEXT_TURN_FUNCTION_ARN', nextTurnFn.functionArn);
+    nextTurnFn.addEnvironment('NEXT_TURN_FUNCTION_ARN', nextTurnFunctionArn);
     nextTurnFn.addEnvironment('SCHEDULER_ROLE_ARN', schedulerRole.roleArn);
 
     // ──────────────────────────────────────────────
