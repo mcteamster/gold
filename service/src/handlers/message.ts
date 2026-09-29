@@ -84,7 +84,7 @@ export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
       }
 
       const gs = createGameState(newRoomID);
-      gs.version = 1;
+      gs.version = 0; // first write — putGameState uses attribute_not_exists condition when version is 0
 
       const stored: StoredGameState = {
         gameState: gs,

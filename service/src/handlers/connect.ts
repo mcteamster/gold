@@ -1,33 +1,21 @@
 /**
  * $connect route handler.
  * - Writes a connection record (connectionId, ttl=now+2h, no roomID yet).
- * - Sends the initial bare game state (round 0, phase "setup") to the new connection.
+ * - Returns 200 immediately. postToConnection cannot be called during $connect
+ *   because the WebSocket handshake is not yet complete — the connection isn't
+ *   available for sending until after this handler returns 200.
+ *   The client sends an 'enter' message after connecting, which triggers the
+ *   message handler to send the initial game state.
  */
 
 import { APIGatewayProxyWebsocketHandlerV2 } from 'aws-lambda';
 import { addConnection } from '../lib/db';
-import { postToConnection } from '../lib/broadcast';
-
-const INITIAL_STATE = {
-  meta: {
-    type: 'gameState',
-    round: 0,
-    turn: 0,
-    phase: 'setup',
-    card: 0,
-    score: 0,
-  },
-};
 
 export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
   const connectionId = event.requestContext.connectionId;
   try {
     // Write connection record — no roomID yet
     await addConnection(connectionId, null);
-
-    // Send bare initial game state so the client renders the landing page
-    await postToConnection(connectionId, INITIAL_STATE);
-
     return { statusCode: 200, body: 'Connected.' };
   } catch (err) {
     console.error('connect handler error:', err);
