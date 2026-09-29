@@ -20,6 +20,7 @@ import {
   StoredGameState,
   getConnectionsForRoom,
   removeConnection,
+  getRoomForConnection,
 } from '../lib/db';
 import { broadcastToRoom, postToConnection } from '../lib/broadcast';
 import {
@@ -51,10 +52,22 @@ export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
     return { statusCode: 400, body: 'Bad request.' };
   }
 
-  const roomID = msg.roomID;
-  const room = parseInt(String(roomID ?? ''), 10);
+  let roomID = msg.roomID;
+  let room = parseInt(String(roomID ?? ''), 10);
 
   try {
+    // ── Resolve room from connection when not provided in message ─────────
+    // Handles start/yeah/nah messages sent without explicit roomID.
+    // If the client omits roomID but this connection is already associated
+    // with a room, use that room rather than creating a new lobby.
+    if ((!roomID || isNaN(room) || room < 1000 || room > 9999) && roomID === undefined) {
+      const connectedRoom = await getRoomForConnection(connectionId);
+      if (connectedRoom) {
+        roomID = connectedRoom;
+        room = parseInt(connectedRoom, 10);
+      }
+    }
+
     // ── 7.2/7.3: Lobby init ───────────────────────────────────────────────
     if (!roomID || isNaN(room) || room < 1000 || room > 9999) {
       // Possibly creating a new lobby, or a roomID was given that doesn't look right
@@ -162,6 +175,10 @@ export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
           // Re-join
           await postToConnection(connectionId, { meta: { type: 'rejoin', data: 'Welcome Back' } });
           await broadcastToRoom(roomStr, gs);
+
+        } else if (msg.data === 'start') {
+          // start message that didn't pass the host check — ignore silently
+          // (wrong playerID, bad secret, or not yet authenticated)
 
         } else if (lobbyPlayers.find((x) => x.name === String(msg.data ?? ''))) {
           // Name collision

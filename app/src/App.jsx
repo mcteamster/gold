@@ -91,6 +91,8 @@ function App() {
       if (!p || hazardEnd > 0) return;
       if (p.active !== true && p.active !== liveState.meta.turn) return;
 
+      // Always include roomID so the server can route to the correct room
+      msg.roomID = parseInt(liveState.meta.room, 10);
       msg.data = type === 'yeah';
       dispatch({
         type: 'OPTIMISTIC_INTENT',
@@ -101,6 +103,8 @@ function App() {
       if (roomID) msg.roomID = Math.floor(roomID);
       msg.data = name;
     } else if (type === 'start') {
+      // Include roomID so the server routes to the existing room, not a new one
+      msg.roomID = parseInt(stateRef.current.meta.room, 10);
       msg.data = 'start';
     }
 

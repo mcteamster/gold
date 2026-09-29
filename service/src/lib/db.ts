@@ -75,6 +75,19 @@ export async function removeConnection(connectionId: string): Promise<void> {
   );
 }
 
+/** Get the roomID associated with a connection (returns null if not found or unassigned). */
+export async function getRoomForConnection(connectionId: string): Promise<string | null> {
+  const result = await ddb.send(
+    new GetCommand({
+      TableName: CONNECTIONS_TABLE,
+      Key: { connectionId },
+      ProjectionExpression: 'roomID',
+    })
+  );
+  if (!result.Item || !result.Item.roomID) return null;
+  return result.Item.roomID as string;
+}
+
 /** Get all connection IDs for a given room via GSI */
 export async function getConnectionsForRoom(roomID: string): Promise<string[]> {
   const result = await ddb.send(
