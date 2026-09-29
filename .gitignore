@@ -11,6 +11,8 @@ node_modules
 
 # production
 /build
+app/build/
+view/build/
 
 # misc
 .DS_Store
