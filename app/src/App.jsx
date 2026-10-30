@@ -113,7 +113,7 @@ function App() {
 
   // ─── WebSocket lifecycle ──────────────────────────────────────────────────────
   useEffect(() => {
-    const ws = new WebSocket('wss://gold.mcteamster.com'); // Prod
+    const ws = new WebSocket(import.meta.env.VITE_WSS_ENDPOINT || 'wss://gold.mcteamster.com'); // Prod
     // const ws = new WebSocket('ws://localhost:8888'); // Dev
     wsRef.current = ws;
 
