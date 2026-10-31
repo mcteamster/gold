@@ -1,9 +1,0 @@
-.Timer {
-    z-index: 6;
-    color: midnightblue;
-    display: -webkit-flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    text-align: center;
-}
